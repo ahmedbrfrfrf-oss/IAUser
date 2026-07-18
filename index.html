@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        nav {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        nav .logo {
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        nav .links a {
+            color: #888888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+
+        nav .links a:hover {
+            color: #ffffff;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content-box {
+            max-width: 600px;
+            padding: 40px;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            background: #050505;
+            transition: border-color 0.3s;
+        }
+
+        .content-box:hover {
+            border-color: #333333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 10px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #333333;
+            border-top: 1px solid #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Void</div>
+        <div class="links">
+            <a href="#projects">Projects</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="content-box">
+            <h1>System Active</h1>
+            <p>Your pure-black layout template is officially working.</p>
+            <a href="#" class="btn">Explore</a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026. All rights reserved.
+    </footer>
+
+</body>
+</html>
