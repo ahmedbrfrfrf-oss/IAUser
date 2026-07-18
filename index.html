@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace</title>
+    <title>AI Workspace</title>
     <style>
+        /* Base Reset & Variables */
         * {
             margin: 0;
             padding: 0;
@@ -17,119 +18,327 @@
             color: #ffffff;
             min-height: 100vh;
             display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 260px;
+            background-color: #050505;
+            border-right: 1px solid #1a1a1a;
+            display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding: 20px;
+            flex-shrink: 0;
         }
 
-        nav {
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1a1a1a;
-        }
-
-        nav .logo {
+        .brand {
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1a1a1a;
+            margin-bottom: 20px;
         }
 
-        nav .links a {
+        .nav-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .tab-btn {
+            background: none;
+            border: 1px solid transparent;
             color: #888888;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-left: 20px;
-            transition: color 0.2s;
+            padding: 12px 16px;
+            text-align: left;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
         }
 
-        nav .links a:hover {
+        .tab-btn:hover {
             color: #ffffff;
+            background-color: #121212;
         }
 
+        .tab-btn.active {
+            color: #ffffff;
+            background-color: #161616;
+            border-color: #333333;
+        }
+
+        .sidebar-footer {
+            color: #444444;
+            font-size: 0.8rem;
+            text-align: center;
+            border-top: 1px solid #1a1a1a;
+            padding-top: 15px;
+        }
+
+        /* Main Workspace Panel */
         main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #000000;
+            position: relative;
+        }
+
+        .view-panel {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Chat View Specific Layout */
+        #chat-view {
+            justify-content: space-between;
+            padding: 30px 40px;
+            height: 100vh;
+        }
+
+        .chat-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .content-box {
-            max-width: 600px;
-            padding: 40px;
+        /* Prompt Input Wrapper */
+        .prompt-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            background: #050505;
             border: 1px solid #1a1a1a;
             border-radius: 8px;
-            background: #050505;
+            padding: 10px;
             transition: border-color 0.3s;
         }
 
-        .content-box:hover {
+        .prompt-wrapper:focus-within {
             border-color: #333333;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            margin-bottom: 15px;
+        .prompt-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 1rem;
+            resize: none;
+            height: 60px;
+            padding: 8px;
         }
 
-        p {
-            color: #666666;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
+        .prompt-input::placeholder {
+            color: #444444;
         }
 
-        .btn {
-            display: inline-block;
+        .prompt-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .send-btn {
             background-color: #ffffff;
             color: #000000;
-            padding: 10px 24px;
+            border: none;
+            padding: 6px 16px;
             border-radius: 4px;
-            text-decoration: none;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            cursor: pointer;
             transition: opacity 0.2s;
         }
 
-        .btn:hover {
+        .send-btn:hover {
             opacity: 0.9;
         }
 
-        footer {
-            padding: 20px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #333333;
-            border-top: 1px solid #1a1a1a;
+        /* Settings & Account Layout */
+        .card-row {
+            max-width: 600px;
+            background: #050505;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #111111;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .setting-label p {
+            font-size: 0.85rem;
+            color: #444444;
+            margin-bottom: 0;
+        }
+
+        /* Generic Form Control Elements */
+        .input-dark {
+            background-color: #000000;
+            border: 1px solid #1a1a1a;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .input-dark:focus {
+            border-color: #333333;
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">Void</div>
-        <div class="links">
-            <a href="#projects">Projects</a>
-            <a href="#about">About</a>
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div>
+            <div class="brand">Void AI</div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('chat-view')">AI Prompt</button>
+                <button class="tab-btn" onclick="switchTab('account-view')">Account</button>
+                <button class="tab-btn" onclick="switchTab('settings-view')">Settings</button>
+            </div>
         </div>
-    </nav>
+        <div class="sidebar-footer">
+            &copy; 2026 Engine active
+        </div>
+    </aside>
 
+    <!-- Main Views Console -->
     <main>
-        <div class="content-box">
-            <h1>System Active</h1>
-            <p>Your pure-black layout template is officially working.</p>
-            <a href="#" class="btn">Explore</a>
+        
+        <!-- 1. AI CHAT VIEW -->
+        <div id="chat-view" class="view-panel active">
+            <div class="chat-container">
+                <h1>How can I help you today?</h1>
+                <p>Enter a prompt down below to begin processing.</p>
+            </div>
+            
+            <div class="prompt-wrapper">
+                <textarea class="prompt-input" placeholder="Ask anything..."></textarea>
+                <div class="prompt-actions">
+                    <button class="send-btn">Generate</button>
+                </div>
+            </div>
         </div>
+
+        <!-- 2. ACCOUNT VIEW -->
+        <div id="account-view" class="view-panel">
+            <h1>Account Overview</h1>
+            <p>Manage your profile configurations and subscription statuses below.</p>
+            
+            <div class="card-row">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Profile Identifier</h3>
+                        <p>Your unique account token string.</p>
+                    </div>
+                    <input type="text" class="input-dark" value="User_7718" readonly>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Tier Access Status</h3>
+                        <p>Current compute tier level allocation.</p>
+                    </div>
+                    <span style="font-size: 0.9rem; color: #888888;">Developer Access Tier</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SETTINGS VIEW -->
+        <div id="settings-view" class="view-panel">
+            <h1>System Settings</h1>
+            <p>Adjust engine thresholds and environment aesthetics.</p>
+            
+            <div class="card-row">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Temperature Control</h3>
+                        <p>Controls generation creativity variance profiles.</p>
+                    </div>
+                    <input type="text" class="input-dark" style="width: 60px; text-align: center;" value="0.7">
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Stream Responses</h3>
+                        <p>Render tokens interactively over system links.</p>
+                    </div>
+                    <input type="checkbox" checked style="accent-color: #ffffff;">
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <footer>
-        &copy; 2026. All rights reserved.
-    </footer>
+    <!-- Script to handle switching tabs seamlessly without leaving the page -->
+    <script>
+        function switchTab(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            // Remove active style from all sidebar buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show current targeted view
+            document.getElementById(viewId).classList.add('active');
+            
+            // Find the clicked button and highlight it
+            event.currentTarget.classList.add('active');
+        }
+    </script>
 
 </body>
 </html>
