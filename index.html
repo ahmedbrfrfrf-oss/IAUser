@@ -127,11 +127,52 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        /* Message Display Area */
+        .chat-history {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            max-width: 85%;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .message.user {
+            background-color: #161616;
+            border: 1px solid #222;
+            color: #ffffff;
+            align-self: flex-end;
+        }
+
+        .message.ai {
+            background-color: transparent;
+            color: #dddddd;
+            align-self: flex-start;
+            border-left: 2px solid #333;
+            border-radius: 0;
+            padding-left: 15px;
+        }
+
+        .message.system {
+            background-color: #2a1111;
+            border: 1px solid #551111;
+            color: #ff9999;
+            align-self: center;
+            text-align: center;
         }
 
         /* Prompt Input Wrapper */
@@ -205,6 +246,7 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid #111111;
+            gap: 20px;
         }
 
         .setting-item:last-child {
@@ -223,7 +265,6 @@
             margin-bottom: 0;
         }
 
-        /* Generic Form Control Elements */
         .input-dark {
             background-color: #000000;
             border: 1px solid #1a1a1a;
@@ -231,6 +272,8 @@
             padding: 8px 12px;
             border-radius: 4px;
             outline: none;
+            flex-grow: 1;
+            max-width: 300px;
         }
         .input-dark:focus {
             border-color: #333333;
@@ -259,15 +302,18 @@
         
         <!-- 1. AI CHAT VIEW -->
         <div id="chat-view" class="view-panel active">
-            <div class="chat-container">
-                <h1>How can I help you today?</h1>
-                <p>Enter a prompt down below to begin processing.</p>
+            <div class="chat-container" id="chatContainer">
+                <div id="welcome-message" style="text-align: center; margin-top: auto; margin-bottom: auto;">
+                    <h1>How can I help you today?</h1>
+                    <p>Enter a prompt down below to begin processing configurations.</p>
+                </div>
+                <div class="chat-history" id="chatHistory"></div>
             </div>
             
             <div class="prompt-wrapper">
-                <textarea class="prompt-input" placeholder="Ask anything..."></textarea>
+                <textarea class="prompt-input" id="userInput" placeholder="Ask anything... (Press Enter to Send)"></textarea>
                 <div class="prompt-actions">
-                    <button class="send-btn">Generate</button>
+                    <button class="send-btn" onclick="handleGeneration()">Generate</button>
                 </div>
             </div>
         </div>
@@ -298,45 +344,122 @@
         <!-- 3. SETTINGS VIEW -->
         <div id="settings-view" class="view-panel">
             <h1>System Settings</h1>
-            <p>Adjust engine thresholds and environment aesthetics.</p>
+            <p>Adjust engine thresholds, security keys, and environment aesthetics.</p>
             
             <div class="card-row">
+                <!-- Gemini API Key Configuration Box -->
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Gemini API Key</h3>
+                        <p>Required to route live requests directly to the core AI engine.</p>
+                    </div>
+                    <input type="password" id="apiKeyInput" class="input-dark" placeholder="Paste AI API key here..." onchange="saveApiKey()">
+                </div>
                 <div class="setting-item">
                     <div class="setting-label">
                         <h3>Temperature Control</h3>
                         <p>Controls generation creativity variance profiles.</p>
                     </div>
-                    <input type="text" class="input-dark" style="width: 60px; text-align: center;" value="0.7">
-                </div>
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Stream Responses</h3>
-                        <p>Render tokens interactively over system links.</p>
-                    </div>
-                    <input type="checkbox" checked style="accent-color: #ffffff;">
+                    <input type="text" class="input-dark" style="width: 60px; text-align: center; flex-grow: 0;" value="0.7">
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Script to handle switching tabs seamlessly without leaving the page -->
+    <!-- App Logic Engine (JavaScript) -->
     <script>
-        function switchTab(viewId) {
-            // Hide all views
-            document.querySelectorAll('.view-panel').forEach(panel => {
-                panel.classList.remove('active');
-            });
-            // Remove active style from all sidebar buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // Load API key from memory on start
+        window.onload = function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+            }
+        };
 
-            // Show current targeted view
+        function saveApiKey() {
+            const keyVal = document.getElementById('apiKeyInput').value.trim();
+            localStorage.setItem('gemini_api_key', keyVal);
+        }
+
+        // Handle tab switching
+        function switchTab(viewId) {
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            
-            // Find the clicked button and highlight it
             event.currentTarget.classList.add('active');
+        }
+
+        // Allow sending with Enter key
+        document.getElementById('userInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleGeneration();
+            }
+        });
+
+        // Main AI Routing Function
+        async html
+        async function handleGeneration() {
+            const inputField = document.getElementById('userInput');
+            const prompt = inputField.value.trim();
+            if (!prompt) return;
+
+            const welcomeMsg = document.getElementById('welcome-message');
+            if (welcomeMsg) welcomeMsg.style.display = 'none';
+
+            const chatHistory = document.getElementById('chatHistory');
+
+            // 1. Append User Message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.innerText = prompt;
+            chatHistory.appendChild(userDiv);
+            inputField.value = ''; // Clear prompt space
+
+            // Scroll container
+            const container = document.getElementById('chatContainer');
+            container.scrollTop = container.scrollHeight;
+
+            // 2. Validate API Token Existence
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                const sysDiv = document.createElement('div');
+                sysDiv.className = 'message system';
+                sysDiv.innerText = "Engine offline: Please go to the 'Settings' tab and paste your Gemini API Key to enable responses.";
+                chatHistory.appendChild(sysDiv);
+                return;
+            }
+
+            // 3. Setup Placeholder AI element
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'message ai';
+            aiDiv.innerText = "Thinking...";
+            chatHistory.appendChild(aiDiv);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                // Route call directly to official Gemini endpoint
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    aiDiv.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    aiDiv.innerText = "Error: Check your API Key string or system connection thresholds.";
+                }
+            } catch (err) {
+                aiDiv.innerText = "Network pipeline connection failure. Try again.";
+                console.error(err);
+            }
+            container.scrollTop = container.scrollHeight;
         }
     </script>
 
