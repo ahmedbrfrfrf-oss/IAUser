@@ -9,7 +9,6 @@ import {
   Wand2,
   ArrowLeftRight,
   Cpu,
-  Image as ImageIcon,
   Paperclip,
   X,
   HelpCircle
@@ -61,7 +60,7 @@ export default function App() {
               const isPromptFocused = document.activeElement === textareaRef.current;
               if (baseImage || isPromptFocused) {
                 setReferenceImage(event.target.result);
-                showToast("Référence d'objet / style ajoutée au prompt !", "success");
+                showToast("Référence d'objet / style ajoutée !", "success");
               } else {
                 setBaseImage(event.target.result);
                 setResultImage(null);
@@ -277,7 +276,6 @@ export default function App() {
     try {
       const systemPrompt = `Tu es un ingénieur de prompt d'élite expert en intelligence visuelle en 2026. Prends l'instruction simple de l'utilisateur et enrichis-la de manière claire, concise et technique pour modifier au mieux l'image.
       Spécifie les détails de texture, l'éclairage requis pour l'intégration, l'environnement direct et la consigne absolue de préserver le reste des pixels.
-      ${referenceImage ? "Prends en compte qu'une image de référence (objet/style) est fournie et qu'il faut guider l'intégration de cet actif." : ""}
       Retourne uniquement le prompt enrichi final en français, aucun blabla explicatif additionnel.`;
       
       const payload = {
@@ -438,7 +436,7 @@ export default function App() {
               </h3>
               <p className="text-[10px] text-neutral-500 max-w-xs leading-relaxed">
                 Format PNG, JPG, WEBP. <br />
-                Vous pouvez aussi copier n'est importe quelle image et faire un **Ctrl+V** (Coller) sur cette page.
+                Vous pouvez aussi copier une image et faire un **Ctrl+V** sur cette page.
               </p>
             </div>
           ) : isProcessing ? (
@@ -447,13 +445,11 @@ export default function App() {
                 <div className="absolute inset-0 rounded-full border-2 border-white/[0.01]" />
                 <div className="absolute inset-0 rounded-full border-t-2 border-indigo-500 animate-spin" />
               </div>
-              <p className="text-[10px] text-neutral-300 uppercase tracking-[0.25em] font-black animate-pulse">Synthèse multimodale 2026...</p>
-              <p className="text-[8.5px] text-neutral-500 mt-2">Intégration et fusion intelligente des pixels</p>
+              <p className="text-[10px] text-neutral-300 uppercase tracking-[0.25em] font-black animate-pulse">Synthèse multimodale...</p>
             </div>
           ) : (
             <div className="w-full h-full max-w-2xl max-h-full flex flex-col justify-center items-center gap-6">
               
-              {/* Split Screen Slider Container */}
               <div 
                 ref={containerRef}
                 onMouseMove={handleMouseMove}
@@ -464,7 +460,6 @@ export default function App() {
                 className="relative w-full h-full rounded-[32px] overflow-hidden border border-white/[0.04] bg-[#050507] select-none cursor-ew-resize flex items-center justify-center shadow-[0_24px_60px_rgba(0,0,0,0.95)]"
                 style={{ aspectRatio: '4/3' }}
               >
-                {/* Generated Result Output view */}
                 <img 
                   src={resultImage ? resultImage : baseImage} 
                   alt="Process Result" 
@@ -472,7 +467,6 @@ export default function App() {
                   draggable="false"
                 />
 
-                {/* Left mask handle configuration setup */}
                 {resultImage && (
                   <div 
                     className="absolute inset-y-0 left-0 overflow-hidden pointer-events-none"
@@ -491,19 +485,17 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Separator UI item element */}
                 {resultImage && (
                   <div 
                     className="absolute inset-y-0 w-[1.5px] bg-indigo-500/40 flex items-center justify-center z-10"
                     style={{ left: `${comparePosition}%` }}
                   >
-                    <div className="w-8 h-10 rounded-xl bg-[#08080a] border border-white/10 text-white shadow-2xl flex flex-col items-center justify-center gap-0.5 group">
+                    <div className="w-8 h-10 rounded-xl bg-[#08080a] border border-white/10 text-white shadow-2xl flex flex-col items-center justify-center gap-0.5">
                       <ArrowLeftRight className="w-3 h-3 text-neutral-400" />
                     </div>
                   </div>
                 )}
 
-                {/* Overlay Context Label Tags */}
                 {resultImage && (
                   <>
                     <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-xl border border-white/[0.05] text-neutral-400 px-3 py-1 rounded-xl text-[8px] font-extrabold uppercase tracking-widest">
@@ -516,7 +508,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* Action Toolbar Control Drawer Tray */}
               <div className="w-full flex items-center justify-between bg-[#040406]/80 border border-white/[0.03] rounded-2xl p-4 backdrop-blur-xl shadow-xl">
                 <div className="flex items-center gap-4">
                   {generationTime && (
@@ -563,7 +554,6 @@ export default function App() {
               </p>
             </div>
 
-            {/* Thumbnail Indicator of Base Active */}
             {baseImage && (
               <div className="bg-[#040406] border border-white/[0.03] p-3 rounded-2xl flex items-center justify-between relative overflow-hidden group">
                 <div className="flex items-center gap-3.5">
@@ -584,7 +574,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Generative Chat Prompt Area */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1.5">
@@ -592,7 +581,7 @@ export default function App() {
                   <div className="group relative">
                     <HelpCircle className="w-3.5 h-3.5 text-neutral-600 hover:text-neutral-400 cursor-pointer" />
                     <span className="pointer-events-none absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2 bg-neutral-900 border border-white/10 text-[8px] text-neutral-400 font-semibold uppercase rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-20">
-                      Vous pouvez copier n'importe quelle image de référence (un meuble, une voiture, un vêtement) et faire un CTRL+V dans cette zone.
+                      Vous pouvez copier une image de référence et faire un CTRL+V dans cette zone.
                     </span>
                   </div>
                 </div>
@@ -614,11 +603,10 @@ export default function App() {
                   ref={textareaRef}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Décrivez les modifications... Ex: 'Ajoute cet objet de référence sur la table basse en l'adaptant à l'ombre'"
+                  placeholder="Décrivez les modifications... Ex: 'Ajoute cet objet de référence sur la table basse'"
                   className="w-full h-36 px-4 py-4 bg-transparent text-[11.5px] text-neutral-200 placeholder-neutral-600 focus:outline-none resize-none leading-relaxed"
                 />
 
-                {/* Attached Reference Image Banner */}
                 {referenceImage && (
                   <div className="mx-4 mb-4 p-2.5 bg-black border border-indigo-500/20 rounded-xl flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -627,7 +615,6 @@ export default function App() {
                       </div>
                       <div>
                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Référence attachée</p>
-                        <p className="text-[8px] text-neutral-500">L'IA s'appuiera sur cet objet</p>
                       </div>
                     </div>
                     <button 
@@ -653,7 +640,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Large Execution Button */}
               <div className="pt-2">
                 <button
                   onClick={handleGenerate}
@@ -691,11 +677,10 @@ export default function App() {
             </div>
           </div>
 
-          {/* Footer branding details */}
           <div className="pt-8 border-t border-white/[0.02] mt-8">
             <div className="flex items-center justify-between text-[8px] text-neutral-600 font-bold uppercase tracking-wider">
               <span>Pipeline Status: Ready</span>
-              <span>Latency: 0ms local</span>
+              <span>2026 Engine</span>
             </div>
           </div>
 
